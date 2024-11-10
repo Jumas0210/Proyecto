@@ -1,29 +1,63 @@
-class UsersController{
+import userModel from "../models/userModel.js";
+import bcrypt from 'bcryptjs';
+
+class UsersControllers{
     constructor(){
 
+    };
+
+    async register(req, res){
+        try {
+            const {email, password, name, address} = req.body;
+
+            console.log(email);
+
+            const userExists = await userModel.getOne({email});
+            console.log(userExists);
+            if (userExists) {
+                return res.status(400).json({error: 'El usuario ya existe'});
+            }
+            
+            const encryptedPassword = await bcrypt.hash(password,10);
+
+            const data = await userModel.create({
+                email,
+                name,
+                password : encryptedPassword,
+                address
+            });
+
+            res.status (200).json(data);
+
+        } catch (e) {
+            console.log(e);
+            res.status(500).send(e);
+        }
     }
 
-    read(req, res){
-        res.json({msg: 'Consulta user'})
-    }
+    async login(req,res){
+        try {
+            const {email, password} = req.body;
 
-    readuser(req, res){
-        const {id} = req.params
-        res.json({msg: `Consulta de un user ${id}`})
-    }
+            const userExists = await userModel.getOne({email});
 
-    create(req, res){
-        res.json({msg: 'Ingreso user'})
-    }
+            if (!userExists) {
+               return  res.status(400).json({Error: "el usuario no existe"});
+            }
 
-    update(req, res){
-        res.json({msg: 'Actualizacion user'})
-    }
-    
-    delete(req, res){
-        res.json({msg: 'borrado user'})
-    }
+            const correctPassword = await bcrypt.compare(password, userExists.password);
 
-}
 
-module.exports = new UsersController();
+            if (correctPassword) {
+               return res.status(200).json({Correo: userExists.email, msg: "usuario verificado con exito"});
+            }
+
+            return res.status(200).json({Correo: userExists.email, msg: "Contraseña incorrecta"});
+
+        } catch (e) {
+            res.status(500).send(e);
+        }
+    }
+};
+
+export default new UsersControllers();

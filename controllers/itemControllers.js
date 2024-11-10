@@ -1,3 +1,6 @@
+import itemModel from '../models/itemModel.js';
+
+
 class ItemsController{
     constructor(){
 
@@ -5,7 +8,8 @@ class ItemsController{
 
     async getAll(req, res){
         try {
-            res.status(201).json({status : 'getAll-ok'});
+            const data = await itemModel.getAll();
+            res.status(201).json(data);
         } catch (e) {
             res.status(500).send(e);
         }
@@ -14,31 +18,37 @@ class ItemsController{
     async getOne(req, res){
         const {id} = req.params
         try {
-            res.status(201).json({status : 'getOne-ok'});
+            const data = await itemModel.getOne(id);
+            res.status(201).json(data);
         } catch (e) {
             res.status(500).send(e);
         }
     }
 
-    create(req, res){
+    async create(req, res){
         try {
-            res.status(201).json({status : 'create-ok'});
+            const data = await itemModel.create(req.body);
+            res.status(201).json(data);
         } catch (e) {
             res.status(500).send(e);
         }
     }
 
-    update(req, res){
+    async update(req, res){
         try {
-            res.status(201).json({status : 'update-ok'});
+            const {id} = req.params
+            const data = await itemModel.update(id,req.body);
+            res.status(201).json(data);
         } catch (e) {
             res.status(500).send(e);
         }
     }
     
-    delete(req, res){
+    async delete(req, res){
         try {
-            res.status(201).json({status : 'delete-ok'});
+            const {id} = req.params;
+            const data = await itemModel.delete(id);
+            res.status(201).json(data);
         } catch (e) {
             res.status(500).send(e);
         }

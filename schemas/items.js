@@ -22,6 +22,13 @@ const itemSchema = new mongoose.Schema(
             type : String,
             default : 'https://static.thenounproject.com/png/1554490-200.png',
         },
+        description: {
+            type : String,
+        },
+        category: {
+            type : String,
+            //default : 'Runner'
+        },
         price: {
             type : Number,
             min: 0,

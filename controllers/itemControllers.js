@@ -8,7 +8,10 @@ class ItemsController{
 
     async getAll(req, res){
         try {
-            const data = await itemModel.getAll();
+
+            const page = req.query.p || 0
+
+            const data = await itemModel.getAll(page);
             res.status(201).json(data);
         } catch (e) {
             res.status(500).send(e);

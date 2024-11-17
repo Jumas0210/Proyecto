@@ -7,8 +7,11 @@ class itemsModel{
         return await Item.create(item);
     }
 
-    async getAll(){
-        return await Item.find();
+    async getAll(page){
+
+        const itemsPerPage = 15;
+
+        return await Item.find().skip(page * itemsPerPage).limit(itemsPerPage);
     }
 
     async getOne(id){
